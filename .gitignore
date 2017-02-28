@@ -1,0 +1,5 @@
+vendor/
+.idea/
+terraform.tfstate
+terraform.tfstate.backup
+terraform-provider-kapacitor
