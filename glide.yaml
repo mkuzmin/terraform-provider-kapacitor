@@ -1,0 +1,11 @@
+package: github.com/mkuzmin/terraform-provider-kapacitor
+import:
+- package: github.com/hashicorp/terraform
+  version: v0.8.6
+  subpackages:
+  - helper/schema
+  - plugin
+  - terraform
+
+- package: github.com/influxdata/kapacitor/client/v1
+  version: 1.2.0
