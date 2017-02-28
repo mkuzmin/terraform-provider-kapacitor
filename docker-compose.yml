@@ -1,0 +1,24 @@
+version: '2'
+services:
+  influxdb:
+    image: influxdb:1.2.0-alpine
+    volumes:
+      - ./docker/influxdb.toml:/etc/influxdb/influxdb.conf:ro
+      - influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+      - "8083:8083"
+
+  kapacitor:
+    depends_on:
+      - influxdb
+    image: kapacitor:1.2.0-alpine
+    volumes:
+      - ./docker/kapacitor.toml:/etc/kapacitor/kapacitor.conf:ro
+      - kapacitor:/var/lib/kapacitor
+    ports:
+      - "9092:9092"
+
+volumes:
+  influxdb:
+  kapacitor:
