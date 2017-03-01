@@ -96,6 +96,31 @@ func taskResourceCreare(d *schema.ResourceData, meta interface{}) error {
 }
 
 func taskResourceRead(d *schema.ResourceData, meta interface{}) error {
+	conn := meta.(*client.Client)
+	id := d.Id()
+
+	task, err := conn.Task(conn.TaskLink(id), &client.TaskOptions{ScriptFormat: "raw"})
+	if err != nil {
+		return err
+	}
+
+	d.Set("name", id)
+
+	switch task.Type {
+	case client.StreamTask:
+		d.Set("type", "stream")
+	case client.BatchTask:
+		d.Set("type", "batch")
+	default:
+		return errors.New("Unknown task type")
+	}
+
+	d.Set("tick_script", task.TICKscript)
+	// TODO: multiple connections
+	d.Set("database", task.DBRPs[0].Database)
+	d.Set("retention_policy", task.DBRPs[0].RetentionPolicy)
+	d.Set("enabled", task.Status == client.Enabled)
+
 	return nil
 }
 
