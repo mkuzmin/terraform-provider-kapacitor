@@ -104,5 +104,14 @@ func taskResourceUpdate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func taskResourceDelete(d *schema.ResourceData, meta interface{}) error {
+	conn := meta.(*client.Client)
+	id := d.Id()
+
+	err := conn.DeleteTask(conn.TaskLink(id))
+	if err != nil {
+		return err
+	}
+
+	d.SetId("")
 	return nil
 }
