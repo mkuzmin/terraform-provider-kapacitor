@@ -7,6 +7,4 @@ resource "kapacitor_task" "test" {
   type = "stream"
   tick_script = "${file("test.tick")}"
   database = "test"
-  retention_policy = "autogen"
-  enabled = true
 }

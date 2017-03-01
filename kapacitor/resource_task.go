@@ -32,12 +32,14 @@ func taskResource() *schema.Resource {
 			},
 			"retention_policy": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+				Default:  "autogen",
 				ForceNew: true,
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
-				Required: true,
+				Optional: true,
+				Default:  true,
 				ForceNew: true,
 			},
 		},
@@ -76,7 +78,7 @@ func taskResourceCreare(d *schema.ResourceData, meta interface{}) error {
 		status = client.Disabled
 	}
 
-	task , err := conn.CreateTask(client.CreateTaskOptions{
+	task, err := conn.CreateTask(client.CreateTaskOptions{
 		ID:         name,
 		Type:       task_type,
 		TICKscript: tick_script,
