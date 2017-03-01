@@ -1,0 +1,6 @@
+stream
+    |from()
+    .measurement('flag')
+    |alert()
+    .crit(lambda: "value" > 1)
+    .log('/dev/stdout')
