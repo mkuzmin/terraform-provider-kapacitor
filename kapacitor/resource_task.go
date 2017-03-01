@@ -40,13 +40,12 @@ func taskResource() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
-				ForceNew: true,
 			},
 		},
 
 		Create: taskResourceCreare,
 		Read:   taskResourceRead,
-		//Update: taskResourceUpdate,
+		Update: taskResourceUpdate,
 		Delete: taskResourceDelete,
 	}
 }
@@ -127,6 +126,23 @@ func taskResourceRead(d *schema.ResourceData, meta interface{}) error {
 }
 
 func taskResourceUpdate(d *schema.ResourceData, meta interface{}) error {
+	conn := meta.(*client.Client)
+	id := d.Id()
+
+	var opts client.UpdateTaskOptions
+	if d.HasChange("enabled") {
+		switch d.Get("enabled").(bool) {
+		case true:
+			opts.Status = client.Enabled
+		case false:
+			opts.Status = client.Disabled
+		}
+	}
+	_, err := conn.UpdateTask(conn.TaskLink(id), opts)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
