@@ -7,3 +7,6 @@ wal-dir = "/var/lib/influxdb/wal"
 
 [admin]
 enabled = true
+
+[http]
+#auth-enabled = true
