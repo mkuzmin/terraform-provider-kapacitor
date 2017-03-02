@@ -51,5 +51,10 @@ func configure(d *schema.ResourceData) (interface{}, error) {
 		return nil, err
 	}
 
+	_, _, err = conn.Ping()
+	if err != nil {
+		return nil, err
+	}
+
 	return conn, nil
 }
