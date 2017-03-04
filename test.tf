@@ -5,8 +5,9 @@ provider "kapacitor" {
 }
 
 resource "kapacitor_task" "test" {
-  name = "test"
+//  name = "test"
   type = "stream"
   tick_script = "${file("test.tick")}"
   database = "test"
+//  enabled = false
 }

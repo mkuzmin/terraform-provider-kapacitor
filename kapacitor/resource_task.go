@@ -11,7 +11,8 @@ func taskResource() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+				Computed: true,
 				ForceNew: true,
 			},
 
@@ -53,45 +54,44 @@ func taskResource() *schema.Resource {
 func taskResourceCreare(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 
-	name := d.Get("name").(string)
+	var opts client.CreateTaskOptions
 
-	var task_type client.TaskType
+	if name, ok := d.GetOk("name"); ok {
+		opts.ID = name.(string)
+	}
+
 	switch d.Get("type").(string) {
 	case "stream":
-		task_type = client.StreamTask
+		opts.Type = client.StreamTask
 	case "batch":
-		task_type = client.BatchTask
+		opts.Type = client.BatchTask
 	default:
 		return errors.New("Unknown task type")
 	}
 
-	tick_script := d.Get("tick_script").(string)
+	opts.TICKscript = d.Get("tick_script").(string)
+
 	database := d.Get("database").(string)
 	retention_policy := d.Get("retention_policy").(string)
+	opts.DBRPs = []client.DBRP{{
+		Database:        database,
+		RetentionPolicy: retention_policy,
+	}}
 
-	var status client.TaskStatus
 	switch d.Get("enabled").(bool) {
 	case true:
-		status = client.Enabled
+		opts.Status = client.Enabled
 	case false:
-		status = client.Disabled
+		opts.Status = client.Disabled
 	}
 
-	task, err := conn.CreateTask(client.CreateTaskOptions{
-		ID:         name,
-		Type:       task_type,
-		TICKscript: tick_script,
-		DBRPs: []client.DBRP{{
-			Database:        database,
-			RetentionPolicy: retention_policy,
-		}},
-		Status: status,
-	})
+	task, err := conn.CreateTask(opts)
 	if err != nil {
 		return err
 	}
 
 	d.SetId(task.ID)
+	d.Set("name", task.ID)
 
 	return nil
 }
