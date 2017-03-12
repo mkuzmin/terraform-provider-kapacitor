@@ -15,12 +15,12 @@ func Provider() *schema.Provider {
 			"username": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "",
+				DefaultFunc: schema.EnvDefaultFunc("KAPACITOR_USERNAME", nil),
 			},
 			"password": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "",
+				DefaultFunc: schema.EnvDefaultFunc("KAPACITOR_PASSWORD", nil),
 			},
 		},
 
