@@ -4,6 +4,9 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/influxdata/kapacitor/client/v1"
 	"errors"
+	"bytes"
+	"fmt"
+	"github.com/hashicorp/terraform/helper/hashcode"
 )
 
 func taskResource() *schema.Resource {
@@ -26,17 +29,28 @@ func taskResource() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
-			"database": {
-				Type:     schema.TypeString,
+
+			"dbrp": &schema.Schema{
+				Type:     schema.TypeSet,
 				Required: true,
-				ForceNew: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"database": {
+							Type:     schema.TypeString,
+							Required: true,
+							ForceNew: true,
+						},
+						"retention_policy": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "autogen",
+							ForceNew: true,
+						},
+					},
+				},
+				Set: dbrpHash,
 			},
-			"retention_policy": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "autogen",
-				ForceNew: true,
-			},
+
 			"enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -71,12 +85,14 @@ func taskResourceCreare(d *schema.ResourceData, meta interface{}) error {
 
 	opts.TICKscript = d.Get("tick_script").(string)
 
-	database := d.Get("database").(string)
-	retention_policy := d.Get("retention_policy").(string)
-	opts.DBRPs = []client.DBRP{{
-		Database:        database,
-		RetentionPolicy: retention_policy,
-	}}
+	for _, v := range d.Get("dbrp").(*schema.Set).List() {
+		v1 := v.(map[string]interface{})
+		d := &client.DBRP{
+			Database:        v1["database"].(string),
+			RetentionPolicy: v1["retention_policy"].(string),
+		}
+		opts.DBRPs = append(opts.DBRPs, *d)
+	}
 
 	switch d.Get("enabled").(bool) {
 	case true:
@@ -157,4 +173,11 @@ func taskResourceDelete(d *schema.ResourceData, meta interface{}) error {
 
 	d.SetId("")
 	return nil
+}
+
+func dbrpHash(v interface{}) int {
+	var buf bytes.Buffer
+	m := v.(map[string]interface{})
+	buf.WriteString(fmt.Sprintf("%s.%s", m["database"].(string), m["retention_policy"].(string)))
+	return hashcode.String(buf.String())
 }
