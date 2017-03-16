@@ -1,5 +1,5 @@
-hash: 1f31bf11607617c19bc7748dc6cf70cfca14e3d2243af5ec7980d94344853c51
-updated: 2017-03-01T00:48:04.321332561+03:00
+hash: 49ad0b874563640af74978a2024531b855dcb3ed87b912a88e6b9d1a10cb2739
+updated: 2017-03-17T00:13:03.320616407+03:00
 imports:
 - name: github.com/apparentlymart/go-cidr
   version: a3ebdb999b831ecb6ab8a226e31b07b2b9061c47
@@ -75,7 +75,7 @@ imports:
   - parser
   - scanner
 - name: github.com/hashicorp/terraform
-  version: df4bcf64828598a25bd41f00470b2ab3a66f3169
+  version: 5bd194faa6fe5ee9ac304b7fe12e1579500be59e
   subpackages:
   - config
   - config/module
@@ -99,7 +99,7 @@ imports:
   - models
   - pkg/escape
 - name: github.com/influxdata/kapacitor
-  version: cfbbd88e9ea0447e6d05b5716a54538d6b3dac31
+  version: 5408057e5a3493d3b5bd38d5d535ea45b587f8ff
   subpackages:
   - client/v1
 - name: github.com/jmespath/go-jmespath
@@ -108,6 +108,8 @@ imports:
   version: f81071c9d77b7931f78c90b416a074ecdc50e959
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/mitchellh/hashstructure
+  version: ab25296c0f51f1022f01cd99dfb45f1775de8799
 - name: github.com/mitchellh/mapstructure
   version: db1efb556f84b25a0a13a04aad883943538ad2e0
 - name: github.com/mitchellh/reflectwalk
