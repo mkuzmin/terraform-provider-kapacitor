@@ -19,6 +19,7 @@ func Provider() *schema.Provider {
 			},
 			"password": &schema.Schema{
 				Type:     schema.TypeString,
+				Sensitive: true,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc("KAPACITOR_PASSWORD", nil),
 			},
